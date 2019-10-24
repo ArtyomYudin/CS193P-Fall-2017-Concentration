@@ -39,6 +39,8 @@ class Concentration {
         }
     }
     
+    // private var timeBonus: Int
+    
     init (numberOfPairOfCard: Int) {
         for _ in 1...numberOfPairOfCard {
             let card = Card()
@@ -50,6 +52,7 @@ class Concentration {
     func chooseCard(at index: Int) {
         if !cards[index].isMatched {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
+                print("Second click!") // TODO: Stop timer bonus interval
                 if cards[matchIndex].identifier == cards[index].identifier {
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
@@ -68,6 +71,7 @@ class Concentration {
                 cards[index].isFaceUp = true
             } else {
                 indexOfOneAndOnlyFaceUpCard = index
+                print("First click!") // TODO: Start timer bonus interval
             }
             
             flipCount += 1
