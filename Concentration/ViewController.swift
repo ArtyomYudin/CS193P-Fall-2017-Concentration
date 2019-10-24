@@ -8,6 +8,7 @@
 
 import UIKit
 
+// Extension for random
 extension Int {
     var arc4random: Int {
         if self > 0 {
@@ -31,21 +32,25 @@ class ViewController: UIViewController {
     
     private var emoji = [Int:String]()
     private var emojiChoices = [String]()
+    private var gameBackground: UIColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+    private var cardBackground: UIColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
     
-    private var emojiThemes = [
-        "Animals" : ["🐶","🐱","🐭","🐰","🦊","🐯","🐷","🐸","🐵","🐥","🦆","🐍","🐜","🐴","🐝","🐢"],
-        "Foods" : ["🍏","🍐","🍊","🍋","🍌","🍇","🍓","🍒","🍍","🍆","🍅","🥦","🥔","🥕","🥝","🌽"],
-        "Cars" : ["🚗","🚕","🚙","🚌","🚎","🚓","🚑","🚒","🚐","🚚","🚛","🚜","🚲","🛵","🏍","🛴"],
-        "Sport" : ["⛷","🏂","🏋️‍♀️","🤼‍♀️","🤸‍♀️","⛹️‍♀️","🤺","🤾‍♀️","🏌️‍♀️","🏇","🧘‍♀️","🐍","🏊‍♀️","🤽‍♀️","🚣‍♀️","🚴‍♀️"],
-        "Building" : ["⛺️","🏠","🏚","🏭","🏢","🏬","🏤","🏥","🏦","🏫","🏛","⛪️","🕌","🗼","🏰","🏯"],
-        "Face" : ["👶","👧","🧒","👦","👩","👨","👱‍♀️","🧔","👵","🧓","👴","👲","👳‍♀️","👳‍♂️","👸","👰"],
-        
+    // Dictionary Emoji Themes with emoji, game backgraund color and card skin color
+    private var emojiThemes: [String:(emojiList: [String], gameSkin: UIColor, cardSkin: UIColor)] = [
+        "Animals" : (["🐶","🐱","🐭","🐰","🦊","🐯","🐷","🐸","🐵","🐥","🦆","🐍","🐜","🐴","🐝","🐢"], #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1), #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 1) ),
+        "Foods" : (["🍏","🍐","🍊","🍋","🍌","🍇","🍓","🍒","🍍","🍆","🍅","🥦","🥔","🥕","🥝","🌽"], #colorLiteral(red: 0.9686274529, green: 0.78039217, blue: 0.3450980484, alpha: 1), #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)),
+        "Cars" : (["🚗","🚕","🚙","🚌","🚎","🚓","🚑","🚒","🚐","🚚","🚛","🚜","🚲","🛵","🏍","🛴"], #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)),
+        "Sport" : (["⛷","🏂","🏋️‍♀️","🤼‍♀️","🤸‍♀️","⛹️‍♀️","🤺","🤾‍♀️","🏌️‍♀️","🏇","🧘‍♀️","🐍","🏊‍♀️","🤽‍♀️","🚣‍♀️","🚴‍♀️"], #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1)),
+        "Building" : (["⛺️","🏠","🏚","🏭","🏢","🏬","🏤","🏥","🏦","🏫","🏛","⛪️","🕌","🗼","🏰","🏯"], #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)),
+        "Face" : (["👶","👧","🧒","👦","👩","👨","👱‍♀️","🧔","👵","🧓","👴","👲","👳‍♀️","👳‍♂️","👸","👰"], #colorLiteral(red: 0.5058823824, green: 0.3372549117, blue: 0.06666667014, alpha: 1), #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1))
     ]
     
     private var indexTheme = 0 {
         didSet {
             emoji = [:]
-            emojiChoices = emojiThemes[emojiThemeKeys[indexTheme]] ?? []
+            (emojiChoices, gameBackground, cardBackground) = emojiThemes[emojiThemeKeys[indexTheme]] ?? ([], #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1))
+            view.backgroundColor = gameBackground
+            themeNameLabel.text = emojiThemeKeys[indexTheme]
         }
     }
 
@@ -53,7 +58,7 @@ class ViewController: UIViewController {
         return Array(emojiThemes.keys)
     }
     
-    
+    @IBOutlet private weak var themeNameLabel: UILabel!
     @IBOutlet private weak var flipCountLabel: UILabel!
     @IBOutlet private var cardButtons: [UIButton]!
     @IBOutlet private weak var scoreLabel: UILabel!
@@ -66,14 +71,15 @@ class ViewController: UIViewController {
     }
     
     @IBAction private func touchNewGame(_ sender: UIButton) {
-        indexTheme = emojiThemeKeys.count.arc4random
         game.startNewGame()
+        indexTheme = emojiThemeKeys.count.arc4random
         updateViewFromModel()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         indexTheme = emojiThemeKeys.count.arc4random
+        updateViewFromModel()
     }
     
     private func updateViewFromModel() {
@@ -85,7 +91,7 @@ class ViewController: UIViewController {
                 button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
                 button.setTitle(emoji(for: card), for: .normal)
             } else {
-                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 0) : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
+                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 0) : cardBackground
                 button.setTitle("", for: .normal)
             }
         }

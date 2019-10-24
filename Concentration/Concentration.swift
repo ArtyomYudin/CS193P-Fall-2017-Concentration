@@ -6,7 +6,7 @@
 //  Copyright © 2019 Artyom Yudin. All rights reserved.
 //
 
-// Модель игры Concentration
+// Concentration Model
 
 import Foundation
 
@@ -16,7 +16,7 @@ class Concentration {
     private (set) var cardsSuffled = [Card]()
     private (set) var flipCount = 0
     private (set) var score = 0
-    private var seenCards = Set<Int>()  // индексы уже увиденных карт
+    private var seenCards = Set<Int>()  // seen card sets
     
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get {
@@ -44,8 +44,7 @@ class Concentration {
             let card = Card()
             cards += [card,card]
         }
-        // TODO: Shuffle the card
-        cards.shuffle()
+        cards.shuffle() // card suffle
     }
     
     func chooseCard(at index: Int) {
@@ -56,14 +55,12 @@ class Concentration {
                     cards[index].isMatched = true
                     score += 2
                 } else {
-                    // тут делаем проверку былали уже просмотренна карта или нет
+                    // card is seen or not and set score bonus
                     if seenCards.contains(index) {
                         score -= 1
-                        print("карта уже просматривалась! \(index)")
                     }
                     if seenCards.contains(matchIndex) {
                         score -= 1
-                        print("карта уже просматривалась! \(matchIndex)")
                     }
                     seenCards.insert(index)
                     seenCards.insert(matchIndex)
@@ -74,12 +71,10 @@ class Concentration {
             }
             
             flipCount += 1
-            print(seenCards)
-        } else {
-            print("Кликаем в пустоту !")
         }
     }
     
+    // reset all values and start neg game
     func startNewGame() {
         flipCount = 0
         score = 0
@@ -87,7 +82,7 @@ class Concentration {
             cards[index].isFaceUp = false
             cards[index].isMatched = false
         }
-        cards.shuffle()
+        cards.shuffle() // card suffle
     }
     
 }
