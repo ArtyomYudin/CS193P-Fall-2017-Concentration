@@ -18,6 +18,9 @@ class Concentration {
     private (set) var score = 0
     private var seenCards = Set<Int>()  // seen card sets
     
+    private var firstClickTime: Date?
+    private var timeBonusInterval: Int = 0
+    
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get {
             var foundIndex: Int? = nil
@@ -39,7 +42,18 @@ class Concentration {
         }
     }
     
-    // private var timeBonus: Int
+    private var timeBonus: Int {
+        switch timeBonusInterval {
+        case 0...1:
+            return 20
+        case 2...3:
+            return 10
+        case 4...6:
+            return 5
+        default:
+            return 1
+        }
+    }
     
     init (numberOfPairOfCard: Int) {
         for _ in 1...numberOfPairOfCard {
@@ -52,18 +66,18 @@ class Concentration {
     func chooseCard(at index: Int) {
         if !cards[index].isMatched {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
-                print("Second click!") // TODO: Stop timer bonus interval
+                timeBonusInterval = -Int((firstClickTime ?? Date()+10).timeIntervalSinceNow)
                 if cards[matchIndex].identifier == cards[index].identifier {
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
-                    score += 2
+                    score += 2 * timeBonus
                 } else {
                     // card is seen or not and set score bonus
                     if seenCards.contains(index) {
-                        score -= 1
+                        score -= 1 * timeBonus
                     }
                     if seenCards.contains(matchIndex) {
-                        score -= 1
+                        score -= 1 * timeBonus
                     }
                     seenCards.insert(index)
                     seenCards.insert(matchIndex)
@@ -71,7 +85,7 @@ class Concentration {
                 cards[index].isFaceUp = true
             } else {
                 indexOfOneAndOnlyFaceUpCard = index
-                print("First click!") // TODO: Start timer bonus interval
+                firstClickTime = Date() // Start timer bonus interval
             }
             
             flipCount += 1
