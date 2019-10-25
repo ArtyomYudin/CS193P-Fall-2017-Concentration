@@ -21,6 +21,8 @@ class Concentration {
     private var firstClickTime: Date?
     private var timeBonusInterval: Int = 0
     
+    private var pressedCardIndex: Int?
+    
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get {
             var foundIndex: Int? = nil
@@ -65,6 +67,7 @@ class Concentration {
     
     func chooseCard(at index: Int) {
         if !cards[index].isMatched {
+            flipCount = (pressedCardIndex == index && indexOfOneAndOnlyFaceUpCard == index) ? flipCount : flipCount + 1
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 timeBonusInterval = -Int((firstClickTime ?? Date()+10).timeIntervalSinceNow)
                 if cards[matchIndex].identifier == cards[index].identifier {
@@ -87,8 +90,7 @@ class Concentration {
                 indexOfOneAndOnlyFaceUpCard = index
                 firstClickTime = Date() // Start timer bonus interval
             }
-            
-            flipCount += 1
+            pressedCardIndex = index
         }
     }
     
